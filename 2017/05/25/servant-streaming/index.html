@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Example: Conduit Streaming with Servant</title>
+  <meta name="description" content="Servant is an awesome set of Haskell packages for Web development. Under the hood the Servant server uses WAI and Warp. Forunately, the package wai-conduit provides support for creating HTTP responses from Conduit sources, which also allow for streaming responses from within a Servant server.">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/2017/05/25/servant-streaming/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="Moritz Clasmeier" href="/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:site" content="mtesseract">
+  <meta name="twitter:title" content="Example: Conduit Streaming with Servant">
+  <meta name="twitter:description" content="Servant is an awesome set of Haskell packages for Web development. Under the hood the Servant server uses WAI and Warp. Forunately, the package wai-conduit provides support for creating HTTP respon...">
+  
+  <meta name="twitter:creator" content="mtesseract">
+  
+  
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css?family=Bitter:400,400i,700" rel="stylesheet">
+
+  
+
+</head>
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+    <img class="header" src="/assets/tesseract.png" width="50">
+
+    <a class="site-title" href="/">Moritz Clasmeier</a>
+
+    <nav class="site-nav">
+      
+      
+      <a class="page-link" href="/about/">About</a>
+      
+      
+      <a class="page-link" href="/archives/">Archives</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Example: Conduit Streaming with Servant</h1>
+    
+    <p class="post-meta"><time datetime="2017-05-25T00:00:00+00:00" itemprop="datePublished">May 25, 2017</time> •
+  
+    
+    
+      
+    
+      
+    
+      
+        <a href="/categories/conduit/">conduit</a>,
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+    
+      
+    
+      
+    
+      
+    
+      
+        <a href="/categories/servant/">servant</a>,
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <a href="/categories/streaming/">streaming</a>
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><a href="http://haskell-servant.readthedocs.io/en/stable/">Servant</a> is an awesome set of Haskell packages for Web development. Under the hood the Servant server uses <a href="http://www.yesodweb.com/book/web-application-interface">WAI</a> and Warp. Forunately, the package <a href="https://www.stackage.org/lts-8.15/package/wai-conduit-3.0.0.3">wai-conduit</a> provides support for creating HTTP responses from Conduit sources, which also allow for streaming responses from within a Servant server.</p>
+
+<p>Edsko de Vries has described the basic mechanism for doing this in a <a href="https://github.com/haskell-servant/servant/issues/271#issuecomment-258079285">Github comment</a>.</p>
+
+<p>This post describes this in more detail, giving a complete example (which can be cloned from its repository).</p>
+
+<p>Let us start! The server API type for a trivial non-streaming example looks like this:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">type</span> <span class="kt">ServiceAPI</span> <span class="o">=</span> <span class="s">"one"</span> <span class="o">:&gt;</span> <span class="kt">Get</span> <span class="sc">'[</span><span class="err">J</span><span class="kt">SON</span><span class="p">]</span> <span class="kt">Int</span>
+</code></pre></div></div>
+
+<p>A handler implementing this endpoint is expected to return a value of type Int and Servant takes care of serializing this value before sending it to the client. An implementation for this API can look like this:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">serveAPI</span> <span class="o">::</span> <span class="kt">Server</span> <span class="kt">ServiceAPI</span>
+<span class="n">serveAPI</span> <span class="o">=</span> <span class="n">serveOne</span>
+
+<span class="n">serveOne</span> <span class="o">::</span> <span class="kt">Handler</span> <span class="kt">Int</span>
+<span class="n">serveOne</span> <span class="o">=</span> <span class="n">return</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<p>Now, imagine we want to implement an endpoint <code class="highlighter-rouge">/ones</code>, which streams infinitely many ones. Say we would like to use Conduit, then a reasonable handler type for the endpoint <code class="highlighter-rouge">/ones</code> would look like this:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">serveOnes</span> <span class="o">::</span> <span class="kt">Handler</span> <span class="p">(</span><span class="kt">Source</span> <span class="p">(</span><span class="kt">ResourceT</span> <span class="kt">IO</span><span class="p">)</span> <span class="p">(</span><span class="kt">Flush</span> <span class="kt">ByteString</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>Note: See the Conduit documentation for information on the Flush type.</p>
+
+<p>Given the above type, an implementation for serveOnes could look as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">serveOnes</span> <span class="o">=</span> <span class="n">return</span> <span class="n">go</span>
+  <span class="kr">where</span> <span class="n">go</span> <span class="o">=</span> <span class="kr">do</span>
+          <span class="n">yield</span> <span class="p">(</span><span class="kt">Chunk</span> <span class="s">"1"</span><span class="p">)</span>
+          <span class="n">yield</span> <span class="kt">Flush</span>
+          <span class="n">go</span>
+</code></pre></div></div>
+
+<p>Now, in order to be able to use this handler for implementing a Servant API, we need to extend Servant’s Web API DSL. Say we would like to extend the above API with a streaming endpoint as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">type</span> <span class="kt">ServiceAPI</span> <span class="o">=</span>
+   <span class="s">"one"</span> <span class="o">:&gt;</span> <span class="kt">Get</span> <span class="sc">'[</span><span class="err">J</span><span class="kt">SON</span><span class="p">]</span> <span class="kt">Int</span>
+   <span class="o">:&lt;|&gt;</span> <span class="s">"ones"</span> <span class="o">:&gt;</span> <span class="kt">GetStream</span> <span class="kt">ByteString</span>
+</code></pre></div></div>
+
+<p>We can begin by definin a new type</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">data</span> <span class="kt">GetStream</span> <span class="n">a</span>
+</code></pre></div></div>
+
+<p>In order to be able to use GetStream for defining Servant endpoints, we need to implement a HasServer instance for it. Edsko has demonstrated a basic class implementation in his comment on Github. I would like to make this a bit more configurable by defining a new type class Streamable:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">class</span> <span class="kt">Streamable</span> <span class="n">a</span> <span class="kr">where</span>
+  <span class="n">streamableToBuilder</span> <span class="o">::</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Builder</span>
+  <span class="n">streamableCT</span> <span class="o">::</span> <span class="kt">Proxy</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">MediaType</span>
+  <span class="n">streamableCT</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Nothing</span>
+  <span class="n">streamableDelimiter</span> <span class="o">::</span> <span class="kt">Proxy</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">Builder</span>
+  <span class="n">streamableDelimiter</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Nothing</span>
+</code></pre></div></div>
+
+<p>The method streamableToBuilder is obviously the most important method here as it allows us to convert a value of the type implementing this class into a ByteString Builder. The method streamableCT can be used for defining the response content type while streamableDelimiter can be used for defining a Builder delimiter which will be inserted in the response stream whenever the handler produces a Flush value. While we are at it, let us implement the following helper function:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">toBuilderDelimited</span> <span class="o">::</span> <span class="n">forall</span> <span class="n">a</span><span class="o">.</span> <span class="kt">Streamable</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="kt">Flush</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Flush</span> <span class="kt">Builder</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>This function will take care of inserting delimiters on Flush values. Implementing is is straight-forward:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">toBuilderDelimited</span> <span class="p">(</span><span class="kt">Chunk</span> <span class="n">a</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="kt">Chunk</span> <span class="p">(</span><span class="n">streamableToBuilder</span> <span class="n">a</span><span class="p">)]</span>
+<span class="n">toBuilderDelimited</span> <span class="kt">Flush</span> <span class="o">=</span> <span class="kr">case</span> <span class="n">streamableDelimiter</span> <span class="p">(</span><span class="kt">Proxy</span> <span class="o">::</span> <span class="kt">Proxy</span> <span class="n">a</span><span class="p">)</span> <span class="kr">of</span>
+                             <span class="kt">Just</span> <span class="n">delim</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Chunk</span> <span class="n">delim</span><span class="p">,</span> <span class="kt">Flush</span><span class="p">]</span>
+                             <span class="kt">Nothing</span>    <span class="o">-&gt;</span> <span class="p">[</span><span class="kt">Flush</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Having this in place, we can now implement HasServer for GetStream a:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Streamable</span> <span class="n">a</span> <span class="o">=&gt;</span> <span class="kt">HasServer</span> <span class="p">(</span><span class="kt">GetStream</span> <span class="n">a</span><span class="p">)</span> <span class="n">ctxt</span> <span class="kr">where</span>
+  <span class="kr">type</span> <span class="kt">ServerT</span> <span class="p">(</span><span class="kt">GetStream</span> <span class="n">a</span><span class="p">)</span> <span class="n">m</span> <span class="o">=</span> <span class="n">m</span> <span class="p">(</span><span class="kt">Source</span> <span class="p">(</span><span class="kt">ResourceT</span> <span class="kt">IO</span><span class="p">)</span> <span class="p">(</span><span class="kt">Flush</span> <span class="n">a</span><span class="p">))</span>
+
+  <span class="n">route</span> <span class="kt">Proxy</span> <span class="n">_ctxt</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">leafRouter</span> <span class="o">$</span>
+    <span class="nf">\</span><span class="n">env</span> <span class="n">req</span> <span class="n">k</span> <span class="o">-&gt;</span>
+      <span class="n">bracket</span> <span class="n">createInternalState</span>
+              <span class="n">closeInternalState</span>
+              <span class="p">(</span><span class="n">runAction</span> <span class="n">sub</span> <span class="n">env</span> <span class="n">req</span> <span class="n">k</span> <span class="o">.</span> <span class="n">mkResponse</span><span class="p">)</span>
+    <span class="kr">where</span>
+
+      <span class="n">mkResponse</span> <span class="o">::</span> <span class="kt">InternalState</span>
+                 <span class="o">-&gt;</span> <span class="kt">Source</span> <span class="p">(</span><span class="kt">ResourceT</span> <span class="kt">IO</span><span class="p">)</span> <span class="p">(</span><span class="kt">Flush</span> <span class="n">a</span><span class="p">)</span>
+                 <span class="o">-&gt;</span> <span class="kt">RouteResult</span> <span class="kt">Response</span>
+      <span class="n">mkResponse</span> <span class="n">st</span> <span class="o">=</span>
+        <span class="kt">Route</span>
+        <span class="o">.</span> <span class="n">responseSource</span> <span class="n">ok200</span> <span class="n">headers</span>
+        <span class="o">.</span> <span class="p">(</span><span class="o">.|</span> <span class="kt">CL</span><span class="o">.</span><span class="n">map</span> <span class="n">toBuilderDelimited</span> <span class="o">.|</span> <span class="kt">C</span><span class="o">.</span><span class="n">concat</span><span class="p">)</span>
+        <span class="o">.</span> <span class="n">transPipe</span> <span class="p">(`</span><span class="n">runInternalState</span><span class="p">`</span> <span class="n">st</span><span class="p">)</span>
+
+      <span class="n">headers</span> <span class="o">::</span> <span class="kt">ResponseHeaders</span>
+      <span class="n">headers</span> <span class="o">=</span>
+        <span class="kr">let</span> <span class="n">maybeMediaTypeBS</span> <span class="o">=</span> <span class="kt">Media</span><span class="o">.</span><span class="n">renderHeader</span> <span class="o">&lt;$&gt;</span> <span class="n">streamableCT</span> <span class="p">(</span><span class="kt">Proxy</span> <span class="o">::</span> <span class="kt">Proxy</span> <span class="n">a</span><span class="p">)</span>
+        <span class="kr">in</span> <span class="n">maybeToList</span> <span class="o">$</span> <span class="p">(</span><span class="s">"Content-Type"</span><span class="p">,)</span> <span class="o">&lt;$&gt;</span> <span class="n">maybeMediaTypeBS</span>
+</code></pre></div></div>
+
+<p>The function mkResponse is responsible for converting a Conduit source into a HTTP Response. It uses the previously defined helper function toBuilderDelimited and responseSource from the wai-conduit package. The function headers takes care of producing the desired Content-Type header.</p>
+
+<p>So far we don’t have any instances for Streamable. A naive implementation for ByteString might look like this:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Streamable</span> <span class="kt">ByteString</span> <span class="kr">where</span>
+  <span class="n">streamableToBuilder</span> <span class="o">=</span> <span class="n">lazyByteString</span> <span class="o">.</span> <span class="kt">ByteString</span><span class="o">.</span><span class="kt">Lazy</span><span class="o">.</span><span class="n">fromStrict</span>
+</code></pre></div></div>
+
+<p>Here we convert a (strict) ByteString to a ByteString Builder without setting any content or delimiter.</p>
+
+<p>For a different use case one might want to stream newline-delimited JSON values using a content type of application/x-json-stream. The Streamable instance implementing this would be</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">instance</span> <span class="kt">Streamable</span> <span class="kt">Value</span> <span class="kr">where</span>
+  <span class="n">streamableToBuilder</span> <span class="o">=</span> <span class="n">lazyByteString</span> <span class="o">.</span> <span class="n">encodingToLazyByteString</span> <span class="o">.</span> <span class="n">toEncoding</span>
+  <span class="n">streamableCT</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Just</span> <span class="p">(</span><span class="s">"application"</span> <span class="kt">Media</span><span class="o">.//</span> <span class="s">"x-json-stream"</span><span class="p">)</span>
+  <span class="n">streamableDelimiter</span> <span class="kr">_</span> <span class="o">=</span> <span class="kt">Just</span> <span class="p">(</span><span class="n">lazyByteString</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Given this instance, we can extend our service API by writing</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">type</span> <span class="kt">ServiceAPI</span> <span class="o">=</span> <span class="s">"one"</span> <span class="o">:&gt;</span> <span class="kt">Get</span> <span class="sc">'[</span><span class="err">J</span><span class="kt">SON</span><span class="p">]</span> <span class="kt">Int</span>
+   <span class="o">:&lt;|&gt;</span> <span class="s">"ones"</span> <span class="o">:&gt;</span> <span class="kt">GetStream</span> <span class="kt">ByteString</span>
+   <span class="o">:&lt;|&gt;</span> <span class="s">"hello"</span> <span class="o">:&gt;</span> <span class="kt">GetStream</span> <span class="kt">Value</span>
+</code></pre></div></div>
+
+<p>and implement a handler for the <code class="highlighter-rouge">/hello</code> endpoint as follows:</p>
+
+<div class="language-haskell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">serveHello</span> <span class="o">::</span> <span class="kt">Handler</span> <span class="p">(</span><span class="kt">Source</span> <span class="p">(</span><span class="kt">ResourceT</span> <span class="kt">IO</span><span class="p">)</span> <span class="p">(</span><span class="kt">Flush</span> <span class="kt">Value</span><span class="p">))</span>
+<span class="n">serveHello</span> <span class="o">=</span> <span class="n">return</span> <span class="n">go</span>
+  <span class="kr">where</span> <span class="n">go</span> <span class="o">=</span> <span class="kr">do</span>
+          <span class="n">yield</span> <span class="p">(</span><span class="kt">Chunk</span> <span class="p">(</span><span class="kt">Array</span> <span class="p">(</span><span class="kt">Vector</span><span class="o">.</span><span class="n">replicate</span> <span class="mi">10</span> <span class="p">(</span><span class="kt">String</span> <span class="s">"hello"</span><span class="p">))))</span>
+          <span class="n">yield</span> <span class="kt">Flush</span>
+          <span class="n">go</span>
+</code></pre></div></div>
+
+<p>This produces a stream of newline-delimited JSON arrays each containing 10 strings. That’s it for now, happy streaming!</p>
+
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; Moritz Clasmeier - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
