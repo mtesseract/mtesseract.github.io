@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Nixified Jekyll setup</title>
+  <meta name="description" content="What I particularly like about Nix is its ability to encapsulate environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use nix-shell. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="/2019/01/29/nixified-jekyll/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="Moritz Clasmeier" href="/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:site" content="mtesseract">
+  <meta name="twitter:title" content="Nixified Jekyll setup">
+  <meta name="twitter:description" content="What I particularly like about Nix is its ability to encapsulate environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version con...">
+  
+  <meta name="twitter:creator" content="mtesseract">
+  
+  
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css?family=Bitter:400,400i,700" rel="stylesheet">
+
+  
+
+</head>
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+    <img class="header" src="/assets/tesseract.png" width="50">
+
+    <a class="site-title" href="/">Moritz Clasmeier</a>
+
+    <nav class="site-nav">
+      
+      
+      <a class="page-link" href="/about/">About</a>
+      
+      
+      <a class="page-link" href="/archives/">Archives</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Nixified Jekyll setup</h1>
+    
+    <p class="post-meta"><time datetime="2019-01-29T00:00:00+00:00" itemprop="datePublished">Jan 29, 2019</time> •
+  
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <a href="/categories/jekyll/">jekyll</a>,
+      
+    
+  
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <a href="/categories/nix/">nix</a>
+      
+    
+      
+    
+      
+    
+  
+
+
+
+</p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>What I particularly like about Nix is its ability to <em>encapsulate</em> environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use <code class="highlighter-rouge">nix-shell</code>. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).</p>
+
+<p>I have created a new Jekyll blog and used <a href="https://github.com/manveru/bundix">bundix</a> to convert a <code class="highlighter-rouge">Gemfile</code> into a Nix expression (<code class="highlighter-rouge">gemset.nix</code>). To this, add the following <code class="highlighter-rouge">default.nix</code>:</p>
+
+<div class="language-nix highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">with</span> <span class="p">(</span><span class="kr">import</span> <span class="o">&lt;</span><span class="nv">nixpkgs</span><span class="o">&gt;</span> <span class="p">{});</span>
+<span class="kd">let</span>
+  <span class="nv">ghPagesEnv</span> <span class="o">=</span> <span class="nv">bundlerEnv</span> <span class="p">{</span>
+    <span class="nv">name</span> <span class="o">=</span> <span class="s2">"mtesseract-github-pages-env"</span><span class="p">;</span>
+    <span class="kn">inherit</span> <span class="nv">ruby</span><span class="p">;</span>
+    <span class="nv">gemdir</span> <span class="o">=</span> <span class="sx">./.</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="kn">in</span>
+<span class="p">{</span>
+  <span class="nv">shell</span> <span class="o">=</span> <span class="nv">stdenv</span><span class="o">.</span><span class="nv">mkDerivation</span> <span class="p">{</span>
+    <span class="nv">name</span> <span class="o">=</span> <span class="s2">"mtesseract-github-pages"</span><span class="p">;</span>
+    <span class="nv">buildInputs</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">ghPagesEnv</span> <span class="p">];</span>
+  <span class="p">};</span>
+  <span class="nv">serve</span> <span class="o">=</span> <span class="nv">stdenv</span><span class="o">.</span><span class="nv">mkDerivation</span> <span class="p">{</span>
+    <span class="nv">name</span> <span class="o">=</span> <span class="s2">"mtesseract-github-pages-serve"</span><span class="p">;</span>
+    <span class="nv">buildInputs</span> <span class="o">=</span> <span class="p">[</span> <span class="nv">ghPagesEnv</span> <span class="p">];</span>
+    <span class="nv">shellHook</span> <span class="o">=</span> <span class="s2">''</span><span class="err">
+</span><span class="s2">      exec </span><span class="si">${</span><span class="nv">ghPagesEnv</span><span class="si">}</span><span class="s2">/bin/jekyll serve --watch</span><span class="err">
+</span><span class="s2">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>This expression contains two attributes: <code class="highlighter-rouge">shell</code> and <code class="highlighter-rouge">serve</code>. Thus, <code class="highlighter-rouge">nix-shell -A shell</code> spawns an interactive shell having Jekyll in path, while <code class="highlighter-rouge">nix-shell -A serve</code> spawn Jekyll to serve the page at <code class="highlighter-rouge">http://localhost:4000</code>. For details, check out the <a href="http://github.com/mtesseract/mtesseract.github.io">repository</a> of this blog.</p>
+
+  </div>
+
+  
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; Moritz Clasmeier - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
