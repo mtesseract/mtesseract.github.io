@@ -34,7 +34,7 @@ Our application server (the system on which the application frontend and backend
 
 The NixOS configuration of the database server looks as follows:
 
-```
+```nix
 { config, pkgs, ... }:
 
 {
@@ -107,14 +107,17 @@ The Nix expressions needed for deployment together with a small shell script are
 
 In addition the following Nix expressions are expected by this deployment setup:
 * `dns.nix`: Containing the DNS entries for the backend and the frontend application. For example:
-```
+
+```nix
 {
   frontend = "app.example";
   backend = "api.example";
 }
 ```
+
 * `network.nix`: The NixOS network configuration of the application server. For example
-```
+
+```nix
 {
   hostName = "dev";
   interfaces = {
@@ -129,14 +132,17 @@ In addition the following Nix expressions are expected by this deployment setup:
   '';
 }
 ```
+
 Of course, the public IP address of the application server and the default gateway need to be filled in here. This configures two network interfaces, one public interface and one internal interface for talking to the database server (`db`).
 * `ssh.nix`: List of public SSH keys which can be used for logging into the application server:
-```
+
+```nix
 [ "ssh-rsa ..." ]
 ```
 
 Having this in place the actual deployment procedure is straight-forward and described in the shell script `deploy.sh`:
-```
+
+```bash
 #!/bin/sh
 
 set -e
