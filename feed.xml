@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-01-29T11:28:01+00:00</updated><id>/feed.xml</id><title type="html">Moritz Clasmeier</title><subtitle>Haskell, Hacking</subtitle><author><name>Moritz Clasmeier</name></author><entry><title type="html">Nixified Jekyll setup</title><link href="/2019/01/29/nixified-jekyll/" rel="alternate" type="text/html" title="Nixified Jekyll setup" /><published>2019-01-29T00:00:00+00:00</published><updated>2019-01-29T00:00:00+00:00</updated><id>/2019/01/29/nixified-jekyll</id><content type="html" xml:base="/2019/01/29/nixified-jekyll/">&lt;p&gt;What I particularly like about Nix is its ability to &lt;em&gt;encapsulate&lt;/em&gt; environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use &lt;code class=&quot;highlighter-rouge&quot;&gt;nix-shell&lt;/code&gt;. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-06-22T16:32:29+00:00</updated><id>/feed.xml</id><title type="html">Moritz Clasmeier</title><subtitle>Haskell, Hacking</subtitle><author><name>Moritz Clasmeier</name></author><entry><title type="html">Nixified Jekyll setup</title><link href="/2019/01/29/nixified-jekyll/" rel="alternate" type="text/html" title="Nixified Jekyll setup" /><published>2019-01-29T00:00:00+00:00</published><updated>2019-01-29T00:00:00+00:00</updated><id>/2019/01/29/nixified-jekyll</id><content type="html" xml:base="/2019/01/29/nixified-jekyll/">&lt;p&gt;What I particularly like about Nix is its ability to &lt;em&gt;encapsulate&lt;/em&gt; environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use &lt;code class=&quot;highlighter-rouge&quot;&gt;nix-shell&lt;/code&gt;. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).&lt;/p&gt;
 
 &lt;p&gt;I have created a new Jekyll blog and used &lt;a href=&quot;https://github.com/manveru/bundix&quot;&gt;bundix&lt;/a&gt; to convert a &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; into a Nix expression (&lt;code class=&quot;highlighter-rouge&quot;&gt;gemset.nix&lt;/code&gt;). To this, add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;default.nix&lt;/code&gt;:&lt;/p&gt;
 
@@ -56,61 +56,61 @@
 
 &lt;p&gt;The NixOS configuration of the database server looks as follows:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}:&lt;/span&gt;
+&lt;div class=&quot;language-nix highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}:&lt;/span&gt;
 
 &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;imports&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;imports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;./&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hardware&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nix&lt;/span&gt;
+      &lt;span class=&quot;sx&quot;&gt;./hardware-configuration.nix&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-  &lt;span class=&quot;n&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;device&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/dev/vda&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;boot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;grub&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;device&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/dev/vda&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-  &lt;span class=&quot;n&quot;&gt;networking&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;hostName&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;db&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;interfaces&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ens3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ipv4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;addresses&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;192.168.122.2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prefixLength&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;nameservers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;8.8.8.8&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;defaultGateway&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;192.168.122.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;firewall&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;allowedTCPPorts&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5432&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;networking&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;hostName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;db&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;interfaces&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ens3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ipv4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;addresses&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;192.168.122.2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;prefixLength&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;nameservers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;8.8.8.8&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;defaultGateway&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;192.168.122.1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;firewall&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;allowedTCPPorts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5432&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
 
-  &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timeZone&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Europe/Berlin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;timeZone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Europe/Berlin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-  &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;systemPackages&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;vim&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;postgresql100&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;systemPackages&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;vim&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;postgresql100&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 
-  &lt;span class=&quot;n&quot;&gt;services&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ntp&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;services&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;ntp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;openssh&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;openssh&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;postgresql&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;postgresql100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;enableTCPIP&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;authentication&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mkOverride&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;host&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;all&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;192.168.122.0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;trust&lt;/span&gt;
-        &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;initialScript&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writeText&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;backend-initScript&quot;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ROLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOGIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PASSWORD&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'app'&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CREATEDB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DATABASE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;GRANT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ALL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PRIVILEGES&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DATABASE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;postgresql&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;postgresql100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;enableTCPIP&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;authentication&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;mkOverride&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        local all all trust&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        host all all 192.168.122.0/24 trust&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        ''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;initialScript&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pkgs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;writeText&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;backend-initScript&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        CREATE ROLE app WITH LOGIN PASSWORD 'app' CREATEDB;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        CREATE DATABASE app;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;        GRANT ALL PRIVILEGES ON DATABASE app TO app;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;      ''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-  &lt;span class=&quot;nf&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stateVersion&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;18.09&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;openssh&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;authorizedKeys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ssh-rsa ...&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;noXlibs&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nf&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;autoUpgrade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;stateVersion&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;18.09&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;users&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;root&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;openssh&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;authorizedKeys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ssh-rsa ...&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;noXlibs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;autoUpgrade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;enable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -133,38 +133,45 @@
 
 &lt;p&gt;In addition the following Nix expressions are expected by this deployment setup:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dns.nix&lt;/code&gt;: Containing the DNS entries for the backend and the frontend application. For example:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
-frontend = &quot;app.example&quot;;
-backend = &quot;api.example&quot;;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;network.nix&lt;/code&gt;: The NixOS network configuration of the application server. For example
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
-hostName = &quot;dev&quot;;
-interfaces = {
-  ens3.ipv4.addresses = [ { address = &quot;a.b.c.d&quot;; prefixLength = 28; } ];
-  ens9.ipv4.addresses = [ { address = &quot;192.168.122.3&quot;; prefixLength = 24; } ];
-};
-defaultGateway = &quot;a.b.c.d&quot;;
-nameservers = [ &quot;8.8.8.8&quot; ];
-firewall.allowedTCPPorts = [ 22 443 ];
-extraHosts = ''
-  192.168.122.2 db
-'';
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;Of course, the public IP address of the application server and the default gateway need to be filled in here. This configures two network interfaces, one public interface and one internal interface for talking to the database server (&lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt;).&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ssh.nix&lt;/code&gt;: List of public SSH keys which can be used for logging into the application server:
-    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[ &quot;ssh-rsa ...&quot; ]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dns.nix&lt;/code&gt;: Containing the DNS entries for the backend and the frontend application. For example:&lt;/li&gt;
 &lt;/ul&gt;
 
+&lt;div class=&quot;language-nix highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;frontend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;app.example&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;api.example&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;network.nix&lt;/code&gt;: The NixOS network configuration of the application server. For example&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-nix highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;hostName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;dev&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;interfaces&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;ens3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ipv4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;addresses&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a.b.c.d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;prefixLength&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;ens9&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ipv4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;addresses&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;address&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;192.168.122.3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;prefixLength&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;defaultGateway&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;a.b.c.d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;nameservers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;8.8.8.8&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;firewall&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;allowedTCPPorts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;extraHosts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;    192.168.122.2 db&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;  ''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Of course, the public IP address of the application server and the default gateway need to be filled in here. This configures two network interfaces, one public interface and one internal interface for talking to the database server (&lt;code class=&quot;highlighter-rouge&quot;&gt;db&lt;/code&gt;).&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ssh.nix&lt;/code&gt;: List of public SSH keys which can be used for logging into the application server:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-nix highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;ssh-rsa ...&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;Having this in place the actual deployment procedure is straight-forward and described in the shell script &lt;code class=&quot;highlighter-rouge&quot;&gt;deploy.sh&lt;/code&gt;:&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
 &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt;
 

@@ -179,61 +179,61 @@
 
 <p>The NixOS configuration of the database server looks as follows:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="n">config</span><span class="p">,</span> <span class="n">pkgs</span><span class="p">,</span> <span class="p">...</span> <span class="p">}:</span>
+<div class="language-nix highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="nv">config</span><span class="p">,</span> <span class="nv">pkgs</span><span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
 
 <span class="p">{</span>
-  <span class="k">imports</span> <span class="p">=</span>
+  <span class="nv">imports</span> <span class="o">=</span>
     <span class="p">[</span>
-      <span class="p">./</span><span class="n">hardware</span><span class="p">-</span><span class="n">configuration</span><span class="p">.</span><span class="n">nix</span>
+      <span class="sx">./hardware-configuration.nix</span>
     <span class="p">];</span>
 
-  <span class="n">boot</span><span class="p">.</span><span class="n">loader</span><span class="p">.</span><span class="n">grub</span><span class="p">.</span><span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
-  <span class="n">boot</span><span class="p">.</span><span class="n">loader</span><span class="p">.</span><span class="n">grub</span><span class="p">.</span><span class="k">version</span> <span class="p">=</span> <span class="m">2</span><span class="p">;</span>
-  <span class="n">boot</span><span class="p">.</span><span class="n">loader</span><span class="p">.</span><span class="n">grub</span><span class="p">.</span><span class="n">device</span> <span class="p">=</span> <span class="s2">"/dev/vda"</span><span class="p">;</span>
+  <span class="nv">boot</span><span class="o">.</span><span class="nv">loader</span><span class="o">.</span><span class="nv">grub</span><span class="o">.</span><span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="nv">boot</span><span class="o">.</span><span class="nv">loader</span><span class="o">.</span><span class="nv">grub</span><span class="o">.</span><span class="nv">version</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="nv">boot</span><span class="o">.</span><span class="nv">loader</span><span class="o">.</span><span class="nv">grub</span><span class="o">.</span><span class="nv">device</span> <span class="o">=</span> <span class="s2">"/dev/vda"</span><span class="p">;</span>
 
-  <span class="n">networking</span> <span class="p">=</span> <span class="p">{</span>
-    <span class="n">hostName</span> <span class="p">=</span> <span class="s2">"db"</span><span class="p">;</span>
-    <span class="n">interfaces</span><span class="p">.</span><span class="n">ens3</span><span class="p">.</span><span class="n">ipv4</span><span class="p">.</span><span class="n">addresses</span> <span class="p">=</span> <span class="p">[</span> <span class="p">{</span> <span class="n">address</span> <span class="p">=</span> <span class="s2">"192.168.122.2"</span><span class="p">;</span> <span class="n">prefixLength</span> <span class="p">=</span> <span class="m">24</span><span class="p">;</span> <span class="p">}</span> <span class="p">];</span>
-    <span class="n">nameservers</span> <span class="p">=</span> <span class="p">[</span> <span class="s2">"8.8.8.8"</span> <span class="p">];</span>
-    <span class="n">defaultGateway</span> <span class="p">=</span> <span class="s2">"192.168.122.1"</span><span class="p">;</span>
-    <span class="n">firewall</span> <span class="p">=</span> <span class="p">{</span>
-      <span class="n">allowedTCPPorts</span> <span class="p">=</span> <span class="p">[</span> <span class="m">22</span> <span class="m">5432</span> <span class="p">];</span>
-      <span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="nv">networking</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nv">hostName</span> <span class="o">=</span> <span class="s2">"db"</span><span class="p">;</span>
+    <span class="nv">interfaces</span><span class="o">.</span><span class="nv">ens3</span><span class="o">.</span><span class="nv">ipv4</span><span class="o">.</span><span class="nv">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="nv">address</span> <span class="o">=</span> <span class="s2">"192.168.122.2"</span><span class="p">;</span> <span class="nv">prefixLength</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span> <span class="p">}</span> <span class="p">];</span>
+    <span class="nv">nameservers</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"8.8.8.8"</span> <span class="p">];</span>
+    <span class="nv">defaultGateway</span> <span class="o">=</span> <span class="s2">"192.168.122.1"</span><span class="p">;</span>
+    <span class="nv">firewall</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nv">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">22</span> <span class="mi">5432</span> <span class="p">];</span>
+      <span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="p">};</span>
   <span class="p">};</span>
 
-  <span class="n">time</span><span class="p">.</span><span class="n">timeZone</span> <span class="p">=</span> <span class="s2">"Europe/Berlin"</span><span class="p">;</span>
+  <span class="nv">time</span><span class="o">.</span><span class="nv">timeZone</span> <span class="o">=</span> <span class="s2">"Europe/Berlin"</span><span class="p">;</span>
 
-  <span class="n">environment</span><span class="p">.</span><span class="n">systemPackages</span> <span class="p">=</span> <span class="k">with</span> <span class="n">pkgs</span><span class="p">;</span> <span class="p">[</span>
-    <span class="n">vim</span> <span class="n">postgresql100</span>
+  <span class="nv">environment</span><span class="o">.</span><span class="nv">systemPackages</span> <span class="o">=</span> <span class="kn">with</span> <span class="nv">pkgs</span><span class="p">;</span> <span class="p">[</span>
+    <span class="nv">vim</span> <span class="nv">postgresql100</span>
   <span class="p">];</span>
 
-  <span class="n">services</span> <span class="p">=</span> <span class="p">{</span>
-    <span class="n">ntp</span> <span class="p">=</span> <span class="p">{</span>
-      <span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="nv">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nv">ntp</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="p">};</span>
-    <span class="n">openssh</span> <span class="p">=</span> <span class="p">{</span>
-      <span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="nv">openssh</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="p">};</span>
-    <span class="n">postgresql</span> <span class="p">=</span> <span class="p">{</span>
-      <span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
-      <span class="k">package</span> <span class="p">=</span> <span class="n">pkgs</span><span class="p">.</span><span class="n">postgresql100</span><span class="p">;</span>
-      <span class="n">enableTCPIP</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
-      <span class="n">authentication</span> <span class="p">=</span> <span class="n">pkgs</span><span class="p">.</span><span class="n">lib</span><span class="p">.</span><span class="n">mkOverride</span> <span class="m">10</span> <span class="s1">''</span>
-        <span class="n">local</span> <span class="n">all</span> <span class="n">all</span> <span class="n">trust</span>
-        <span class="n">host</span> <span class="n">all</span> <span class="n">all</span> <span class="m">192.168.122.0</span><span class="p">/</span><span class="m">24</span> <span class="n">trust</span>
-        <span class="s1">''</span><span class="p">;</span>
-      <span class="n">initialScript</span> <span class="p">=</span> <span class="n">pkgs</span><span class="p">.</span><span class="n">writeText</span> <span class="s2">"backend-initScript"</span> <span class="s1">''</span>
-        <span class="n">CREATE</span> <span class="n">ROLE</span> <span class="n">app</span> <span class="k">WITH</span> <span class="n">LOGIN</span> <span class="n">PASSWORD</span> <span class="s1">'app'</span> <span class="n">CREATEDB</span><span class="p">;</span>
-        <span class="n">CREATE</span> <span class="n">DATABASE</span> <span class="n">app</span><span class="p">;</span>
-        <span class="n">GRANT</span> <span class="n">ALL</span> <span class="n">PRIVILEGES</span> <span class="n">ON</span> <span class="n">DATABASE</span> <span class="n">app</span> <span class="k">TO</span> <span class="n">app</span><span class="p">;</span>
-      <span class="s1">''</span><span class="p">;</span>
+    <span class="nv">postgresql</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nv">package</span> <span class="o">=</span> <span class="nv">pkgs</span><span class="o">.</span><span class="nv">postgresql100</span><span class="p">;</span>
+      <span class="nv">enableTCPIP</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nv">authentication</span> <span class="o">=</span> <span class="nv">pkgs</span><span class="o">.</span><span class="nv">lib</span><span class="o">.</span><span class="nv">mkOverride</span> <span class="mi">10</span> <span class="s2">''</span><span class="err">
+</span><span class="s2">        local all all trust</span><span class="err">
+</span><span class="s2">        host all all 192.168.122.0/24 trust</span><span class="err">
+</span><span class="s2">        ''</span><span class="p">;</span>
+      <span class="nv">initialScript</span> <span class="o">=</span> <span class="nv">pkgs</span><span class="o">.</span><span class="nv">writeText</span> <span class="s2">"backend-initScript"</span> <span class="s2">''</span><span class="err">
+</span><span class="s2">        CREATE ROLE app WITH LOGIN PASSWORD 'app' CREATEDB;</span><span class="err">
+</span><span class="s2">        CREATE DATABASE app;</span><span class="err">
+</span><span class="s2">        GRANT ALL PRIVILEGES ON DATABASE app TO app;</span><span class="err">
+</span><span class="s2">      ''</span><span class="p">;</span>
     <span class="p">};</span>
   <span class="p">};</span>
-  <span class="nf">system</span><span class="p">.</span><span class="n">stateVersion</span> <span class="p">=</span> <span class="s2">"18.09"</span><span class="p">;</span>
-  <span class="n">users</span><span class="p">.</span><span class="n">users</span><span class="p">.</span><span class="n">root</span><span class="p">.</span><span class="n">openssh</span><span class="p">.</span><span class="n">authorizedKeys</span><span class="p">.</span><span class="n">keys</span> <span class="p">=</span> <span class="p">[</span> <span class="s2">"ssh-rsa ..."</span> <span class="p">];</span>
-  <span class="n">environment</span><span class="p">.</span><span class="n">noXlibs</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
-  <span class="nf">system</span><span class="p">.</span><span class="n">autoUpgrade</span><span class="p">.</span><span class="n">enable</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
+  <span class="nv">system</span><span class="o">.</span><span class="nv">stateVersion</span> <span class="o">=</span> <span class="s2">"18.09"</span><span class="p">;</span>
+  <span class="nv">users</span><span class="o">.</span><span class="nv">users</span><span class="o">.</span><span class="nv">root</span><span class="o">.</span><span class="nv">openssh</span><span class="o">.</span><span class="nv">authorizedKeys</span><span class="o">.</span><span class="nv">keys</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"ssh-rsa ..."</span> <span class="p">];</span>
+  <span class="nv">environment</span><span class="o">.</span><span class="nv">noXlibs</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="nv">system</span><span class="o">.</span><span class="nv">autoUpgrade</span><span class="o">.</span><span class="nv">enable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
@@ -256,38 +256,45 @@
 
 <p>In addition the following Nix expressions are expected by this deployment setup:</p>
 <ul>
-  <li><code class="highlighter-rouge">dns.nix</code>: Containing the DNS entries for the backend and the frontend application. For example:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
-frontend = "app.example";
-backend = "api.example";
-}
-</code></pre></div>    </div>
-  </li>
-  <li><code class="highlighter-rouge">network.nix</code>: The NixOS network configuration of the application server. For example
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
-hostName = "dev";
-interfaces = {
-  ens3.ipv4.addresses = [ { address = "a.b.c.d"; prefixLength = 28; } ];
-  ens9.ipv4.addresses = [ { address = "192.168.122.3"; prefixLength = 24; } ];
-};
-defaultGateway = "a.b.c.d";
-nameservers = [ "8.8.8.8" ];
-firewall.allowedTCPPorts = [ 22 443 ];
-extraHosts = ''
-  192.168.122.2 db
-'';
-}
-</code></pre></div>    </div>
-    <p>Of course, the public IP address of the application server and the default gateway need to be filled in here. This configures two network interfaces, one public interface and one internal interface for talking to the database server (<code class="highlighter-rouge">db</code>).</p>
-  </li>
-  <li><code class="highlighter-rouge">ssh.nix</code>: List of public SSH keys which can be used for logging into the application server:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ "ssh-rsa ..." ]
-</code></pre></div>    </div>
-  </li>
+  <li><code class="highlighter-rouge">dns.nix</code>: Containing the DNS entries for the backend and the frontend application. For example:</li>
 </ul>
 
+<div class="language-nix highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nv">frontend</span> <span class="o">=</span> <span class="s2">"app.example"</span><span class="p">;</span>
+  <span class="nv">backend</span> <span class="o">=</span> <span class="s2">"api.example"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><code class="highlighter-rouge">network.nix</code>: The NixOS network configuration of the application server. For example</li>
+</ul>
+
+<div class="language-nix highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nv">hostName</span> <span class="o">=</span> <span class="s2">"dev"</span><span class="p">;</span>
+  <span class="nv">interfaces</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nv">ens3</span><span class="o">.</span><span class="nv">ipv4</span><span class="o">.</span><span class="nv">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="nv">address</span> <span class="o">=</span> <span class="s2">"a.b.c.d"</span><span class="p">;</span> <span class="nv">prefixLength</span> <span class="o">=</span> <span class="mi">28</span><span class="p">;</span> <span class="p">}</span> <span class="p">];</span>
+    <span class="nv">ens9</span><span class="o">.</span><span class="nv">ipv4</span><span class="o">.</span><span class="nv">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="nv">address</span> <span class="o">=</span> <span class="s2">"192.168.122.3"</span><span class="p">;</span> <span class="nv">prefixLength</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span> <span class="p">}</span> <span class="p">];</span>
+  <span class="p">};</span>
+  <span class="nv">defaultGateway</span> <span class="o">=</span> <span class="s2">"a.b.c.d"</span><span class="p">;</span>
+  <span class="nv">nameservers</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"8.8.8.8"</span> <span class="p">];</span>
+  <span class="nv">firewall</span><span class="o">.</span><span class="nv">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">22</span> <span class="mi">443</span> <span class="p">];</span>
+  <span class="nv">extraHosts</span> <span class="o">=</span> <span class="s2">''</span><span class="err">
+</span><span class="s2">    192.168.122.2 db</span><span class="err">
+</span><span class="s2">  ''</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Of course, the public IP address of the application server and the default gateway need to be filled in here. This configures two network interfaces, one public interface and one internal interface for talking to the database server (<code class="highlighter-rouge">db</code>).</p>
+<ul>
+  <li><code class="highlighter-rouge">ssh.nix</code>: List of public SSH keys which can be used for logging into the application server:</li>
+</ul>
+
+<div class="language-nix highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span> <span class="s2">"ssh-rsa ..."</span> <span class="p">]</span>
+</code></pre></div></div>
+
 <p>Having this in place the actual deployment procedure is straight-forward and described in the shell script <code class="highlighter-rouge">deploy.sh</code>:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
 
 <span class="nb">set</span> <span class="nt">-e</span>
 
