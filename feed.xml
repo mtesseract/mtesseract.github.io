@@ -1,4 +1,259 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-06-22T16:32:29+00:00</updated><id>/feed.xml</id><title type="html">Moritz Clasmeier</title><subtitle>Haskell, Hacking</subtitle><author><name>Moritz Clasmeier</name></author><entry><title type="html">Nixified Jekyll setup</title><link href="/2019/01/29/nixified-jekyll/" rel="alternate" type="text/html" title="Nixified Jekyll setup" /><published>2019-01-29T00:00:00+00:00</published><updated>2019-01-29T00:00:00+00:00</updated><id>/2019/01/29/nixified-jekyll</id><content type="html" xml:base="/2019/01/29/nixified-jekyll/">&lt;p&gt;What I particularly like about Nix is its ability to &lt;em&gt;encapsulate&lt;/em&gt; environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use &lt;code class=&quot;highlighter-rouge&quot;&gt;nix-shell&lt;/code&gt;. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.5">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-11-12T21:07:35+00:00</updated><id>/feed.xml</id><title type="html">Moritz Clasmeier</title><subtitle>Haskell, Hacking</subtitle><author><name>Moritz Clasmeier</name></author><entry><title type="html">Rustberry Jukebox</title><link href="/2019/11/12/rustberry-jukebox/" rel="alternate" type="text/html" title="Rustberry Jukebox" /><published>2019-11-12T00:00:00+00:00</published><updated>2019-11-12T00:00:00+00:00</updated><id>/2019/11/12/rustberry-jukebox</id><content type="html" xml:base="/2019/11/12/rustberry-jukebox/">&lt;p&gt;So, I am one of those tech-affine parents, who wanted to build some kind of Jukebox device for
+their child. In this post I provide an overview of my specific jukebox implementation.&lt;/p&gt;
+
+&lt;p&gt;There are &lt;a href=&quot;https://tonies.de/&quot;&gt;commercial products&lt;/a&gt; and existing &lt;a href=&quot;http://phoniebox.de/index-en.html&quot;&gt;hobbyist
+projects&lt;/a&gt;, but for several reasons I decided
+to work on my own project. It is called &lt;em&gt;Rustberry Jukebox&lt;/em&gt; and the core
+software is written in &lt;a href=&quot;https://www.rust-lang.org&quot;&gt;Rust&lt;/a&gt;. Even though the name
+might suggest otherwise, please note that this is not related to an existing
+Rust &lt;a href=&quot;https://crates.io/crates/rustberry&quot;&gt;crate&lt;/a&gt; with a similar name.&lt;/p&gt;
+
+&lt;p&gt;The feature set I had in mind for the jukebox device:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rustic/old aesthetics (as opposed to the polished modern interface of commercial products)&lt;/li&gt;
+  &lt;li&gt;Stream music from Spotify via WLAN&lt;/li&gt;
+  &lt;li&gt;Playback controllable via RFID tags&lt;/li&gt;
+  &lt;li&gt;Hardware button for switching the jukebox on and off&lt;/li&gt;
+  &lt;li&gt;Status LEDs (jukebox running and jukebox playing)&lt;/li&gt;
+  &lt;li&gt;The code should be conveniently cross-compilable for a Raspberry Pi.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This is the resulting jukebox:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/jukebox-open.jpg&quot;&gt;&lt;img src=&quot;/assets/images/jukebox-open.jpg&quot; alt=&quot;Jukebox Open&quot; style=&quot;width:30%;&quot; /&gt;&lt;/a&gt;
+&lt;a href=&quot;/assets/images/jukebox-open-2.jpg&quot;&gt;&lt;img src=&quot;/assets/images/jukebox-open-2.jpg&quot; alt=&quot;Jukebox Open&quot; style=&quot;width:40%;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Let us now have a closer look.&lt;/p&gt;
+
+&lt;h2 id=&quot;components&quot;&gt;Components&lt;/h2&gt;
+
+&lt;h3 id=&quot;the-case&quot;&gt;The Case&lt;/h3&gt;
+
+&lt;p&gt;I am pretty unexperienced when it
+comes to physical manufacturing. Fortunately I found a potential enclosing, which seemed
+promising: an old looking &lt;a href=&quot;https://www.amazon.de/BRYNNBERG-Schatztruhe-Marco-38x27x14cm-Aufbewahrungsbox/dp/B07CMPTSD9/ref=sr_1_3?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&amp;amp;crid=2X2CTDPJTEGAA&amp;amp;keywords=holzkiste+verschlie%C3%9Fbar&amp;amp;qid=1570263909&amp;amp;s=kitchen&amp;amp;sprefix=holzkiste+vers%2Ckitchen%2C165&amp;amp;sr=1-3&quot;&gt;suitcase / treasure
+chest&lt;/a&gt;.
+I thought it might be feasible to build a double bottom into this suitcase,
+having enough hidden space for all the tech stuff inside (Raspberry Pi,
+speakers, power, circuits, cables / adapters) and providing enough space above
+the double bottom for user controls and RFID-equipped &lt;em&gt;records&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/jukebox-suitcase.jpg&quot;&gt;&lt;img src=&quot;/assets/images/jukebox-suitcase.jpg&quot; alt=&quot;Jukebox Suitcase&quot; style=&quot;width:40%;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;the-records&quot;&gt;The Records&lt;/h3&gt;
+
+&lt;p&gt;What should the RFID tags be attached to, if one does not want to use plain RFID
+cards or transponders? Again, I was lucky to find a product, which
+matches the intended rustic aesthetics and allows for cheap extensibility:
+&lt;a href=&quot;https://www.amazon.de/gp/product/B078HB4ZD7/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&amp;amp;language=en_GB&amp;amp;psc=1&quot;&gt;wooden
+discs&lt;/a&gt;.
+The idea is to stick the RFID tag to the bottom side of a disk and use the top
+side for artwork.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/jukebox-records.jpg&quot;&gt;&lt;img src=&quot;/assets/images/jukebox-records.jpg&quot; alt=&quot;Jukebox Records&quot; style=&quot;width:40%;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;the-tech&quot;&gt;The Tech&lt;/h3&gt;
+
+&lt;p&gt;I had an old Raspberry Pi 2 laying around, which I intended to use as a
+technological foundation for the jukebox. The playback should be controllable
+via RFID tags – a technology, which I am not familiar with at all. After some
+research I had identified the &lt;a href=&quot;http://wiki.sunfounder.cc/index.php?title=Mifare_RC522_Module_RFID_Reader&quot;&gt;MIFARE
+RC522&lt;/a&gt;
+as a common and well-supported RFID reader/writerfor suitable for &lt;a href=&quot;https://pimylifeup.com/raspberry-pi-rfid-rc522/&quot;&gt;use with a
+Raspberry Pi&lt;/a&gt;. This device is
+compatible with RFID tags such as &lt;a href=&quot;https://www.amazon.de/gp/product/B01HEU96C6&quot;&gt;MIFARE Classic 1K Chip,
+13.56mhz&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For enabling audio output, I went with the &lt;a href=&quot;https://www.amazon.de/gp/product/B00JRW0M32&quot;&gt;Trust Leto 2.0 USB
+Speakers&lt;/a&gt;. I was somewhat worried
+about the energy consumption (6W) of these speakers, since I prefer to not use
+additional power sources besides the Raspberry Pi’s own USB connectors for
+compactness reasons. But they seem to work fine at medium volume. The USB speakers connect to
+the computer via a standard stereo jack, but as is well-known the stereo jack
+output of the Raspberry Pi offers poor quality. Therefore I have decided to
+extract the audio signal from the Raspberry HDMI output using a simple
+&lt;a href=&quot;https://www.amazon.de/gp/product/B00ZMV7RL2&quot;&gt;HDMI-to-VGA adapter&lt;/a&gt; capable of
+extracting the HDMI audio signal.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/assets/images/jukebox-inner.jpg&quot;&gt;&lt;img src=&quot;/assets/images/jukebox-inner.jpg&quot; alt=&quot;Jukebox Inner&quot; style=&quot;width:40%;&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;the-software&quot;&gt;The Software&lt;/h2&gt;
+
+&lt;p&gt;As mentioned above there are already software solutions for an
+RFID-controllable jukebox. But after a quick look at the &lt;a href=&quot;https://www.phoniebox.de&quot;&gt;Phoniebox&lt;/a&gt; software &lt;a href=&quot;https://github.com/MiczFlor/RPi-Jukebox-RFID&quot;&gt;RPi-Jukebox-RFID&lt;/a&gt; I decided to build my
+&lt;a href=&quot;https://github.com/mtesseract/rustberry&quot;&gt;own project&lt;/a&gt;. The primary motives for this decision include the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;RPi-Jukebox-RFID seems like a rather huge Python project and I am neither particularly familiar
+with Python tooling, nor with the Python ecosystem. Also, I have not had the best experiences with Python
+codebases in the past, though I cannot judge about the quality of this
+particular project.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Currently I am primarily interested in one particular
+use-case: Spotify integration – which is labelled as “experimental” for
+RPi-Jukebox-RFID. I wanted something more compact and simple.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;From the introductory video of the Phoniebox it seems that the RFID-control
+logic is such that an RFID tag is used only for &lt;em&gt;triggering&lt;/em&gt; playback. What I
+would prefer is that an RFID tag is used for controlling the playback, which
+means &lt;em&gt;starting&lt;/em&gt; and &lt;em&gt;stopping&lt;/em&gt; it, similar to the commercial Toniebox:
+Playback is active as long as the RFID tag is in range of the RFID reader.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;After evaluation of a few options I decided to build the software with Rust,
+since I learned to like that language, it performs well, has a great package
+ecosystem, can be used for lower-level hardware access, comes with a low memory
+footprint and it has a pretty good cross-compilation story. Besides, I have
+never worked on a similar project and it seemed like an interesting learning opportunity.&lt;/p&gt;
+
+&lt;h3 id=&quot;spotify-playback&quot;&gt;Spotify Playback&lt;/h3&gt;
+
+&lt;p&gt;Regarding Spotify Playback, my initial plan was to run Firefox on the Raspberry
+Pi and use the &lt;a href=&quot;https://developer.spotify.com/documentation/web-playback-sdk/&quot;&gt;Spotify Web
+SDK&lt;/a&gt; for
+providing the Spotify streaming capabilities. This worked pretty well on my
+development machine. But once I tried it out on the Raspberry I had learn the
+hard way that the Spotify Web SDK requires Widevine DRM Support, which the
+non-official Firefox builds do not contain (and for ARM there are no official
+Firefox builds). So this was my daily lesson in the category “Integrate early”.
+So, how do I stream from Spotify? Well,
+&lt;a href=&quot;https://github.com/librespot-org/librespot&quot;&gt;Librespot&lt;/a&gt; comes to the rescue:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;librespot is an open source client library for Spotify. It enables
+applications to use Spotify’s service, without using the official but
+closed-source libspotify. Additionally, it will provide extra features which
+are not available in the official library.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Librespot is used and packaged by the
+&lt;a href=&quot;https://github.com/dtcooper/raspotify&quot;&gt;Raspotify&lt;/a&gt; project. They provide easy to
+install Debian packages for ARM Raspbian. With Raspotify installed and
+configured to use a specific Spotify Premium account, the Raspberry is ready to
+be used as Spotify client through the &lt;a href=&quot;https://developer.spotify.com/documentation/web-api/&quot;&gt;Spotify Web
+API&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;os&quot;&gt;OS&lt;/h3&gt;
+
+&lt;p&gt;Actually I would have preferred being able to use &lt;a href=&quot;https://nixos.org/&quot;&gt;NixOS&lt;/a&gt; on the Raspberry Pi, but
+unfortunately the ARM port of NixOS was way to rough around the edges for my use-case. The issues I
+have had with NixOS even on my Raspberry Pi 3, which comes with an AARCH64 CPU
+somewhat supported by upstream NixOS, included:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Missing and/or incomplete documentation, in particular when it comes to
+configuring the Raspberry Pi firmware and the boot process (after having
+written a first &lt;code class=&quot;highlighter-rouge&quot;&gt;configuration.nix&lt;/code&gt; according to the documentation, the
+Raspberry Pi was unable to boot).&lt;/li&gt;
+  &lt;li&gt;The boot process is slower than Raspbian’s.&lt;/li&gt;
+  &lt;li&gt;After about 2h work I was still not able to get audio working – something
+that just works on Raspbian.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;With NixOS I like being able to declaratively configure the complete operating
+system with all required services and deploy a system configuration to a remote
+NixOS with complete rollback functionality built-in.  Maybe somewhen in the
+future I can write the NixOS derivations for my Jukebox Software and deploy it
+to a Raspberry Pi running NixOS. But this is not today.&lt;/p&gt;
+
+&lt;p&gt;Given this unsatisfying situation I have decided to build on &lt;strong&gt;Raspbian&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;rfid-io&quot;&gt;RFID IO&lt;/h3&gt;
+
+&lt;p&gt;A quick search on &lt;a href=&quot;&quot;&gt;crates.io&lt;/a&gt; revealed the following list of potentially useful crates:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://crates.io/crates/rfid-rs&quot;&gt;rfid-rs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://crates.io/crates/mfrc522&quot;&gt;mfrc522&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It seems that &lt;em&gt;mfrc522&lt;/em&gt; is currently very limited in functionality (see
+https://docs.rs/mfrc522/0.2.0/mfrc522/struct.Mfrc522.html) and does not yet
+support reading and writing the data blocks on an RFID tag. &lt;em&gt;rfid-rs&lt;/em&gt; on the
+other side does
+support reading from and writing to the RFID tag’s data blocks, but the &lt;a href=&quot;https://gitlab.com/jspngh/rfid-rs&quot;&gt;upstream code
+base&lt;/a&gt; had some issues, which is why I have
+created my &lt;a href=&quot;https://gitlab.com/mclasmeier/rfid-rs&quot;&gt;personal fork&lt;/a&gt; for the
+purpose of this project. I will see if my changes can be integrated into the
+upstream version of the crate.&lt;/p&gt;
+
+&lt;h3 id=&quot;gpio&quot;&gt;GPIO&lt;/h3&gt;
+
+&lt;p&gt;For GPIO access there are multiple crates available, for example:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://crates.io/crates/gpio-cdev&quot;&gt;gpio-cdev&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://crates.io/crates/gpio&quot;&gt;gpio&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://crates.io/crates/sysfs_gpio&quot;&gt;sysfs_gpio&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I have decided to go with &lt;em&gt;gpio-cdev&lt;/em&gt;, since – according to my understanding – using the character device API for GPIO is
+recommended for new applications. I have been missing some built-in functionality for
+listening for events on mutliple GPIO lines at the same time, but that was easy
+to implement using threads and channels.&lt;/p&gt;
+
+&lt;p&gt;At some point I had confused the different GPIO line labeling systems. For debugging GPIO, the following command turned out to be very helpful:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;watch -d -n 0.5 gpio -g readall
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;(the &lt;code class=&quot;highlighter-rouge&quot;&gt;gpio&lt;/code&gt; program comes from the &lt;code class=&quot;highlighter-rouge&quot;&gt;wiringpi&lt;/code&gt; package)&lt;/p&gt;
+
+&lt;h2 id=&quot;circuits&quot;&gt;Circuits&lt;/h2&gt;
+
+&lt;p&gt;For the first vesion of the Jukebox the following hardware related functionality should be be supported:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;A single physical button for switching the box on and shutting it down.&lt;/li&gt;
+  &lt;li&gt;Stable RFID tag reading via the RC522 reader.&lt;/li&gt;
+  &lt;li&gt;A status LED indicating that the box is running.&lt;/li&gt;
+  &lt;li&gt;A status LED for indicating that it is in playback mode (i.e. an RFID tag is
+near the RFID reader).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;power-switch&quot;&gt;Power Switch&lt;/h3&gt;
+
+&lt;p&gt;I found &lt;a href=&quot;https://howchoo.com/g/mwnlytk3zmm/how-to-add-a-power-button-to-your-raspberry-pi&quot;&gt;an article&lt;/a&gt;, which describes
+the wake-up functionality:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Simply put, shorting pins 5 and 6 (GPIO3 and GND) together will wake the Pi up from a halt state.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;As indicated above, there should be a single physical button for switching the
+device on and shutting it down. Therefore, it is already clear that the power
+button needs to be connected to GPIO3, which needs to be configured as an input
+line. Since pressing the button is required to connect GPIO3 with GND, the
+GPIO3 line needs to be set to high when the button is &lt;em&gt;not&lt;/em&gt; pressed. In other
+words, we need a &lt;a href=&quot;https://en.wikipedia.org/wiki/Pull-up_resistor&quot;&gt;Pull-up
+resistor&lt;/a&gt; connecting GPIO3
+through a resistor with a voltage source when the button is not pressed. When
+the button is pressed GPIO3 will be connected with GND.&lt;/p&gt;
+
+&lt;h3 id=&quot;power-status-led&quot;&gt;Power Status LED&lt;/h3&gt;
+
+&lt;p&gt;There is a nice hack for building a status LED: Connect a LED to the Raspberry
+Pi’s serial console as described in the article &lt;a href=&quot;https://howchoo.com/g/ytzjyzy4m2e/build-a-simple-raspberry-pi-led-power-status-indicator&quot;&gt;Build a Simple Raspberry Pi LED
+Power/Status
+Indicator&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;playback-status-led&quot;&gt;Playback Status LED&lt;/h3&gt;
+
+&lt;p&gt;This is nothing fancy, just another LED conneted to a regular GPIO input line,
+which is configured as output and controlled in software.&lt;/p&gt;
+
+&lt;h2 id=&quot;cross-compilation&quot;&gt;Cross Compilation&lt;/h2&gt;
+
+&lt;p&gt;I am currently developing on Darwin/x86_64, but the Raspberry Pi runs
+Linux/ARMv7. I have created a &lt;a href=&quot;https://github.com/mtesseract/rustberry/blob/master/builder/Dockerfile&quot;&gt;Docker image
+description&lt;/a&gt;,
+for a build container. The container contains the cross-compilation toolchain
+and is reachable via SSH.
+A &lt;a href=&quot;https://github.com/mtesseract/rustberry/blob/master/builder/build.sh&quot;&gt;build
+script&lt;/a&gt; is
+used for producing binaries of the Rustberry Jukebox software for the Raspberry
+Pi.&lt;/p&gt;</content><author><name>Moritz Clasmeier</name></author><summary type="html">So, I am one of those tech-affine parents, who wanted to build some kind of Jukebox device for their child. In this post I provide an overview of my specific jukebox implementation.</summary></entry><entry><title type="html">Nixified Jekyll setup</title><link href="/2019/01/29/nixified-jekyll/" rel="alternate" type="text/html" title="Nixified Jekyll setup" /><published>2019-01-29T00:00:00+00:00</published><updated>2019-01-29T00:00:00+00:00</updated><id>/2019/01/29/nixified-jekyll</id><content type="html" xml:base="/2019/01/29/nixified-jekyll/">&lt;p&gt;What I particularly like about Nix is its ability to &lt;em&gt;encapsulate&lt;/em&gt; environments. No need to remember how to set up a certain environment, just encode it in a Nix expression, check it into version control and use &lt;code class=&quot;highlighter-rouge&quot;&gt;nix-shell&lt;/code&gt;. This is especially useful when having to occasionally deal with certain environments, without being too familiar with the technical details. For me one such example is Jekyll, a Ruby application (and I am not familiar with Ruby).&lt;/p&gt;
 
 &lt;p&gt;I have created a new Jekyll blog and used &lt;a href=&quot;https://github.com/manveru/bundix&quot;&gt;bundix&lt;/a&gt; to convert a &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; into a Nix expression (&lt;code class=&quot;highlighter-rouge&quot;&gt;gemset.nix&lt;/code&gt;). To this, add the following &lt;code class=&quot;highlighter-rouge&quot;&gt;default.nix&lt;/code&gt;:&lt;/p&gt;
 

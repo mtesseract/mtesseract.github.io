@@ -17,6 +17,10 @@
 <lastmod>2019-01-29T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>/2019/11/12/rustberry-jukebox/</loc>
+<lastmod>2019-11-12T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>/404/</loc>
 </url>
 <url>
@@ -54,5 +58,14 @@
 </url>
 <url>
 <loc>/categories/jekyll/</loc>
+</url>
+<url>
+<loc>/categories/raspberry/</loc>
+</url>
+<url>
+<loc>/categories/jukebox/</loc>
+</url>
+<url>
+<loc>/categories/rust/</loc>
 </url>
 </urlset>
